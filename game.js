@@ -1,7 +1,7 @@
 function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
-  this.player = new Component(this.canvas, this.ctx);
+  this.player = new Player(this);
 }
 
 Game.prototype.start = function() {
@@ -13,7 +13,7 @@ Game.prototype.start = function() {
       this.player.handleKeys();
       //draws
     }.bind(this),
-    17
+    18
   );
 };
 

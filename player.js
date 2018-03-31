@@ -1,12 +1,12 @@
-function Player(canvas, ctx) {
+function Player(game) {
     this.width = 50;
     this.height = 50;
     this.x = 0;
-    this.y = canvas.height - this.height;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.speedX = 5;
-    this.speedY = 5;
+    this.y = game.canvas.height - this.height;
+    this.canvas = game.canvas;
+    this.ctx = game.ctx;
+    this.speedX = 10;
+    this.speedY = 10;
 }
 Player.prototype.handleKeys = function () {
     var RIGHT_KEY = 39;
