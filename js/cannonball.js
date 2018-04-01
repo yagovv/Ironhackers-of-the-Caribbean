@@ -6,6 +6,7 @@ function CannonBall(ship, side) {
   this.side = side;
   this.angle = ship.angle;
   this.speed = 1;
+  this.inertia = ship.inertia;
 }
 CannonBall.prototype.draw = function() {
   this.ctx.fillStyle = "black";
@@ -17,11 +18,11 @@ CannonBall.prototype.draw = function() {
 CannonBall.prototype.move = function() {
   var angleRad = this.angle * (Math.PI / 180); //angle in radians
   if(this.side == "right"){
-    this.x = this.x + this.speed * Math.cos(angleRad + Math.PI/2);
-    this.y = this.y + this.speed * Math.sin(angleRad + Math.PI/2);
+    this.x = this.x + this.speed * Math.cos(angleRad + Math.PI/2) + this.inertia[0];
+    this.y = this.y + this.speed * Math.sin(angleRad + Math.PI/2) + this.inertia[1];
   }
   if(this.side == "left"){
-    this.x = this.x + this.speed * Math.cos(angleRad - Math.PI/2);
-    this.y = this.y + this.speed * Math.sin(angleRad - Math.PI/2);
+    this.x = this.x + this.speed * Math.cos(angleRad - Math.PI/2) + this.inertia[0];
+    this.y = this.y + this.speed * Math.sin(angleRad - Math.PI/2) + this.inertia[1];
   }
 };

@@ -1,8 +1,8 @@
-function Boat(game) {
+function Boat(game, x, y) {
   this.canvas = game.canvas;
   this.ctx = game.ctx;
-  this.x = this.canvas.width / 2;
-  this.y = this.canvas.height / 2;
+  this.x = x;
+  this.y = y;
   this.angle = 270;
   this.speed = 0;
   this.level = 1;
@@ -14,15 +14,19 @@ function Boat(game) {
   this.img.src = "images/boat0.png";
   this.cannonBalls = [];
   this.setHandlers();
+  this.inertia = [];
 }
 
 Boat.prototype.loadCannons = function() {
   if (!this.cannonsLoaded) {
     console.log("loading cannons!");
-    setTimeout(function() {
-      console.log("timeout entered", this.cannonsLoaded);
-      this.cannonsLoaded = true;
-    }.bind(this), 1000);
+    setTimeout(
+      function() {
+        console.log("timeout entered", this.cannonsLoaded);
+        this.cannonsLoaded = true;
+      }.bind(this),
+      1000
+    );
   }
 };
 Boat.prototype.setHandlers = function() {
@@ -61,6 +65,7 @@ Boat.prototype.shootLeft = function() {
     this.cannonBalls.push(new CannonBall(this, "left"));
     this.cannonsLoaded = false;
     this.loadCannons();
+    this.deleteCannonBall();
   }
 };
 Boat.prototype.shootRight = function() {
@@ -68,7 +73,15 @@ Boat.prototype.shootRight = function() {
     this.cannonBalls.push(new CannonBall(this, "right"));
     this.cannonsLoaded = false;
     this.loadCannons();
+    this.deleteCannonBall();
   }
+};
+Boat.prototype.deleteCannonBall = function() {
+  setTimeout(function() {
+    console.log("Deleted", this.cannonBalls);
+    this.cannonBalls.shift();
+    console.log(this.cannonBalls);
+  }.bind(this), 2000);
 };
 Boat.prototype.rotateLeft = function() {
   this.angle -= 3;
@@ -80,6 +93,8 @@ Boat.prototype.move = function() {
   var angleRad = this.angle * (Math.PI / 180); //angle in radians
   this.x = this.x + this.speed * Math.cos(angleRad);
   this.y = this.y + this.speed * Math.sin(angleRad);
+  this.inertia[0] = this.speed * Math.cos(angleRad);
+  this.inertia[1] = this.speed * Math.sin(angleRad);
 };
 Boat.prototype.raiseSails = function() {
   if (this.speed >= 0.2) {
@@ -94,19 +109,25 @@ Boat.prototype.lowerSails = function() {
 Boat.prototype.draw = function() {
   var width = this.img.width;
   var height = this.img.height;
+
   var angleInRadians = this.angle * (Math.PI / 180);
   this.ctx.translate(this.x, this.y);
   this.ctx.rotate(angleInRadians);
   this.ctx.drawImage(this.img, -width / 2, -height / 2, width, height);
   this.ctx.rotate(-angleInRadians);
   this.ctx.translate(-this.x, -this.y);
+
+  // this.drawHitbox("brown");
 };
 Boat.prototype.drawWaves = function() {};
 
-Boat.prototype.drawHitbox = function(x, y, color) {
+Boat.prototype.drawHitbox = function(color) {
   this.ctx.fillStyle = color;
-  this.ctx.fillRect(x, y, 30, 80);
+  var angleInRadians = this.angle * (Math.PI / 180);
+  // this.ctx.translate(this.x, this.y);
+  this.ctx.rotate(angleInRadians);
+  this.ctx.fillRect(this.x, this.y, 30, 80);
+  // this.ctx.rotate(-angleInRadians);
+  // this.ctx.translate(-this.x, -this.y);
 };
-Boat.prototype.healthIndicator = function() {
-
-}
+Boat.prototype.healthIndicator = function() {};

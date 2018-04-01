@@ -2,7 +2,7 @@ function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
   this.player = new Player(this);
-  this.boat = new Boat(this);
+  this.boat = new Boat(this, 100, 100);
 }
 
 Game.prototype.start = function() {
@@ -69,7 +69,7 @@ Game.prototype.moveAll = function() {
       });
     }.bind(this),
     18
-  );
+  ); 
 };
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
