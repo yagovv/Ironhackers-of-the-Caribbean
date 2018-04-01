@@ -2,19 +2,12 @@ function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
   this.player = new Player(this);
+  this.boat = new Boat(this);
 }
 
 Game.prototype.start = function() {
-  this.id = setInterval(
-    function() {
-      this.clear();
-      this.player.draw();
-      this.drawGrid();
-      this.player.handleKeys();
-      //draws
-    }.bind(this),
-    18
-  );
+  this.drawAll();
+  this.moveAll();
 };
 
 Game.prototype.clear = function() {
@@ -52,4 +45,32 @@ Game.prototype.drawGrid = function() {
     }
   }
   this.ctx.restore();
+};
+Game.prototype.drawAll = function() {
+  this.idDraw = setInterval(
+    function() {
+      this.clear();
+      this.boat.draw();
+      this.boat.cannonBalls.forEach(element => {
+        element.draw();
+      });
+
+      //draws
+    }.bind(this),
+    18
+  );
+};
+Game.prototype.moveAll = function() {
+  this.idMove = setInterval(
+    function() {
+      this.boat.move();
+      this.boat.cannonBalls.forEach(function(e) {
+        e.move();
+      });
+    }.bind(this),
+    18
+  );
+};
+Game.prototype.clear = function() {
+  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
