@@ -3,6 +3,7 @@ function Game(canvas, ctx) {
   this.ctx = ctx;
   this.player = new Player(this);
   this.boat = new Boat(this, 100, 100);
+  this.sea = new Sea(this);
 }
 
 Game.prototype.start = function() {
@@ -47,6 +48,7 @@ Game.prototype.drawGrid = function() {
   this.ctx.restore();
 };
 Game.prototype.drawAll = function() {
+  var frames = 0;
   this.idDraw = setInterval(
     function() {
       this.clear();
@@ -54,7 +56,14 @@ Game.prototype.drawAll = function() {
       this.boat.cannonBalls.forEach(element => {
         element.draw();
       });
-
+      this.sea.drawWind();
+      frames++;
+      if(frames == 500){
+        this.sea.changeWind();
+      }
+      if(frames >= 1000){
+        frames = 0;
+      }
       //draws
     }.bind(this),
     18

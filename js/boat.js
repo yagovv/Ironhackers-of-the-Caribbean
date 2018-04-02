@@ -14,7 +14,7 @@ function Boat(game, x, y) {
   this.img.src = "images/boat0.png";
   this.cannonBalls = [];
   this.setHandlers();
-  this.inertia = [];
+  // this.inertia = [];
 }
 
 Boat.prototype.loadCannons = function() {
@@ -62,7 +62,11 @@ Boat.prototype.setHandlers = function() {
 };
 Boat.prototype.shootLeft = function() {
   if (this.cannonsLoaded) {
-    this.cannonBalls.push(new CannonBall(this, "left"));
+    var inertia = [];
+    var angleRad = this.angle * (Math.PI / 180);
+    inertia[0] = this.speed * Math.cos(angleRad);
+    inertia[1] = this.speed * Math.sin(angleRad);
+    this.cannonBalls.push(new CannonBall(this, "left", inertia));
     this.cannonsLoaded = false;
     this.loadCannons();
     this.deleteCannonBall();
@@ -70,18 +74,34 @@ Boat.prototype.shootLeft = function() {
 };
 Boat.prototype.shootRight = function() {
   if (this.cannonsLoaded) {
-    this.cannonBalls.push(new CannonBall(this, "right"));
+    var inertia = [];
+    var angleRad = this.angle * (Math.PI / 180);
+    inertia[0] = this.speed * Math.cos(angleRad);
+    inertia[1] = this.speed * Math.sin(angleRad);
+    this.cannonBalls.push(new CannonBall(this, "right", inertia));
     this.cannonsLoaded = false;
     this.loadCannons();
     this.deleteCannonBall();
   }
 };
 Boat.prototype.deleteCannonBall = function() {
-  setTimeout(function() {
-    console.log("Deleted", this.cannonBalls);
-    this.cannonBalls.shift();
-    console.log(this.cannonBalls);
-  }.bind(this), 2000);
+  setTimeout(
+    function() {
+      console.log("Deleted", this.cannonBalls);
+      var x = this.cannonBalls[0].x;
+      var y = this.cannonBalls[0].y;
+      var missedId = setInterval(function(){
+        this.drawMissed(x,y);
+      }.bind(this), 17);
+      setTimeout (function(){
+        clearInterval(missedId);
+        console.log("cleared");
+      }, 1000);
+      this.cannonBalls.shift();
+      console.log(this.cannonBalls);
+    }.bind(this),
+    2000
+  );
 };
 Boat.prototype.rotateLeft = function() {
   this.angle -= 3;
@@ -93,8 +113,8 @@ Boat.prototype.move = function() {
   var angleRad = this.angle * (Math.PI / 180); //angle in radians
   this.x = this.x + this.speed * Math.cos(angleRad);
   this.y = this.y + this.speed * Math.sin(angleRad);
-  this.inertia[0] = this.speed * Math.cos(angleRad);
-  this.inertia[1] = this.speed * Math.sin(angleRad);
+  //this.inertia[0] =
+  //this.inertia[1] = this.speed * Math.sin(angleRad);
 };
 Boat.prototype.raiseSails = function() {
   if (this.speed >= 0.2) {
@@ -129,5 +149,9 @@ Boat.prototype.drawHitbox = function(color) {
   this.ctx.fillRect(this.x, this.y, 30, 80);
   // this.ctx.rotate(-angleInRadians);
   // this.ctx.translate(-this.x, -this.y);
+};
+Boat.prototype.drawMissed = function(x,y) {
+  this.ctx.fillStyle = "white";
+  this.ctx.fillRect(x,y,10,10);
 };
 Boat.prototype.healthIndicator = function() {};
