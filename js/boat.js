@@ -14,7 +14,8 @@ function Boat(game, x, y) {
   this.img = new Image();
   this.img.src = "images/boat0.png";
   this.cannonBalls = [];
-  this.setHandlers();
+  this.width = 50;
+  this.height = 80;
   // this.inertia = [];
 }
 
@@ -23,43 +24,11 @@ Boat.prototype.loadCannons = function() {
     console.log("loading cannons!");
     setTimeout(
       function() {
-        console.log("timeout entered", this.cannonsLoaded);
         this.cannonsLoaded = true;
       }.bind(this),
       1000
     );
   }
-};
-Boat.prototype.setHandlers = function() {
-  var W_KEY = 87;
-  var A_KEY = 65;
-  var S_KEY = 83;
-  var D_KEY = 68;
-  var SPACE_KEY = 32;
-  var RIGHT_KEY = 39;
-  var LEFT_KEY = 37;
-  document.onkeydown = function(event) {
-    switch (event.keyCode) {
-      case D_KEY:
-        this.rotateRight();
-        break;
-      case A_KEY:
-        this.rotateLeft();
-        break;
-      case W_KEY:
-        this.lowerSails();
-        break;
-      case S_KEY:
-        this.raiseSails();
-        break;
-      case RIGHT_KEY:
-        this.shootRight();
-        break;
-      case LEFT_KEY:
-        this.shootLeft();
-        break;
-    }
-  }.bind(this);
 };
 Boat.prototype.shootLeft = function() {
   if (this.cannonsLoaded) {
@@ -86,11 +55,19 @@ Boat.prototype.shootRight = function() {
   }
 };
 Boat.prototype.deleteCannonBall = function() {
+  //para distinguir si una bola de cañon ha tocado agua
+  // o ha tocado un barco al llamar a esta a funcion,
+  // hay que crear una variable lifetime que sea de la que
+  // dependa el momento de hacerla desaparecer, y si 
+  // esa variable no es 0 cuando se llama a esta funcion
+  // entonces es que ha tocado a un barco y se dibuja un
+  // efecto diferente
+
   setTimeout(
     function() {
-      console.log("Deleted", this.cannonBalls);
       var x = this.cannonBalls[0].x;
       var y = this.cannonBalls[0].y;
+      if(this.cannonBalls[0].lifetime)
       var missedId = setInterval(function(){
         this.drawMissed(x,y);
       }.bind(this), 17);
@@ -153,6 +130,10 @@ Boat.prototype.drawHitbox = function(color) {
   // this.ctx.rotate(-angleInRadians);
   // this.ctx.translate(-this.x, -this.y);
 };
+Boat.prototype.drawImpact = function(x,y) {
+  this.ctx.fillStyle = "red";
+  this.ctx.fillRect(x,y,10,10);
+}
 Boat.prototype.drawMissed = function(x,y) {
   this.ctx.fillStyle = "white";
   this.ctx.fillRect(x,y,10,10);

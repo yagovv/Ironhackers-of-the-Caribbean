@@ -7,6 +7,7 @@ function CannonBall(ship, side, inertia) {
   this.angle = ship.angle;
   this.radius = 5;
   this.speed = 1;
+  this.lifetime = 100;
   this.inertia = inertia;
 }
 CannonBall.prototype.draw = function() {

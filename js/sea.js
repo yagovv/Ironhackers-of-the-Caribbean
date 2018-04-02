@@ -13,7 +13,7 @@ Sea.prototype.createIsland = function() {};
 Sea.prototype.draw = function() {};
 Sea.prototype.drawWind = function() {
   //text cutre version
-  this.ctx.font = "30px Comic Sans";
+  this.ctx.font = "30px Arial";
   this.ctx.fillStyle = "black";
   this.ctx.fillText(
     "Wind: " + this.wind,
