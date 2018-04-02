@@ -1,14 +1,15 @@
 function CannonBall(ship, side, inertia) {
   this.canvas = ship.canvas;
   this.ctx = ship.ctx;
-  this.x = ship.x;
-  this.y = ship.y;
+  this.x = ship.x + ship.width /2 +10;
+  this.y = ship.y + ship.height /2;
   this.side = side;
   this.angle = ship.angle;
   this.radius = 5;
   this.speed = 1;
   this.lifetime = 100;
   this.inertia = inertia;
+  this.impacted = false;
 }
 CannonBall.prototype.draw = function() {
   this.ctx.fillStyle = "black";

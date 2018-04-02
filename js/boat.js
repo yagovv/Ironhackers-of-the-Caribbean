@@ -55,31 +55,38 @@ Boat.prototype.shootRight = function() {
   }
 };
 Boat.prototype.deleteCannonBall = function() {
-  //para distinguir si una bola de cañon ha tocado agua
-  // o ha tocado un barco al llamar a esta a funcion,
-  // hay que crear una variable lifetime que sea de la que
-  // dependa el momento de hacerla desaparecer, y si 
-  // esa variable no es 0 cuando se llama a esta funcion
-  // entonces es que ha tocado a un barco y se dibuja un
-  // efecto diferente
-
-  setTimeout(
-    function() {
-      var x = this.cannonBalls[0].x;
-      var y = this.cannonBalls[0].y;
-      if(this.cannonBalls[0].lifetime)
-      var missedId = setInterval(function(){
-        this.drawMissed(x,y);
-      }.bind(this), 17);
-      setTimeout (function(){
-        clearInterval(missedId);
-        console.log("cleared");
-      }, 1000);
-      this.cannonBalls.shift();
-      console.log(this.cannonBalls);
-    }.bind(this),
-    2000
-  );
+  for (var i = 0; i < this.cannonBalls.length; i++) {
+    if (this.cannonBalls[i].lifetime <= 0) {
+      var x = this.cannonBalls[i].x;
+      var y = this.cannonBalls[i].y;
+      if (!this.cannonBalls[i].impacted) {
+        //DIBUJO GUAY DE AGUA (al menos antes del refactor xd)
+        var missedId = setInterval(
+          function() {
+            this.drawMissed(x, y);
+          }.bind(this),
+          17
+        );
+        setTimeout(function() {
+          clearInterval(missedId);
+          console.log("cleared");
+        }, 1000);
+        //--------------------
+      } else {
+        var impactedId = setInterval(
+          function() {
+            this.drawImpacted(x, y);
+          }.bind(this),
+          17
+        );
+        setTimeout(function() {
+          clearInterval(impactedId);
+          console.log("impacted");
+        }, 1000);
+      }
+      this.cannonBalls.splice(i, 1);
+    }
+  }
 };
 Boat.prototype.rotateLeft = function() {
   this.angle -= 3;
@@ -109,37 +116,54 @@ Boat.prototype.draw = function() {
   var height = this.img.height;
 
   var angleInRadians = this.angle * (Math.PI / 180);
-  this.ctx.translate(this.x, this.y);
+  this.ctx.translate(this.x + this.img.width/2, this.y + this.img.height/2);
   this.ctx.rotate(angleInRadians);
   this.ctx.drawImage(this.img, -width / 2, -height / 2, width, height);
   this.ctx.rotate(-angleInRadians);
-  this.ctx.translate(-this.x, -this.y);
+  this.ctx.translate(-this.x - this.img.width/2, -this.y - this.img.height/2);
 
   this.healthIndicator();
+  this.drawHitbox();
+  
 
   // this.drawHitbox("brown");
 };
 Boat.prototype.drawWaves = function() {};
 
 Boat.prototype.drawHitbox = function(color) {
-  this.ctx.fillStyle = color;
-  var angleInRadians = this.angle * (Math.PI / 180);
+  // this.ctx.fillStyle = color;
   // this.ctx.translate(this.x, this.y);
-  this.ctx.rotate(angleInRadians);
-  this.ctx.fillRect(this.x, this.y, 30, 80);
   // this.ctx.rotate(-angleInRadians);
   // this.ctx.translate(-this.x, -this.y);
+  this.ctx.translate(this.x, this.y);
+  this.ctx.strokeStyle = "red";
+  var angleInRadians = this.angle * (Math.PI / 180);
+  this.ctx.rotate(angleInRadians);
+  this.ctx.strokeRect(this.x, this.y, this.width, this.height);
+  this.ctx.rotate(-angleInRadians);
+  this.ctx.translate(-this.x, -this.y);
 };
-Boat.prototype.drawImpact = function(x,y) {
+Boat.prototype.drawImpacted = function(x, y) {
   this.ctx.fillStyle = "red";
-  this.ctx.fillRect(x,y,10,10);
-}
-Boat.prototype.drawMissed = function(x,y) {
+  this.ctx.fillRect(x, y, 10, 10);
+};
+Boat.prototype.drawMissed = function(x, y) {
   this.ctx.fillStyle = "white";
-  this.ctx.fillRect(x,y,10,10);
+  this.ctx.fillRect(x, y, 10, 10);
 };
 Boat.prototype.healthIndicator = function() {
-  this.ctx.strokeRect(this.x - this.img.width/2 -10, this.y + this.img.height, 100, 10);
+  this.ctx.strokeStyle = "black";
+  this.ctx.strokeRect(
+    this.x-10,
+    this.y + this.img.height +20,
+    100,
+    10
+  );
   this.ctx.fillStyle = "green";
-  this.ctx.fillRect(this.x - this.img.width/2 - 10, this.y + this.img.height, this.health, 10);
+  this.ctx.fillRect(
+    this.x-10,
+    this.y + this.img.height +20,
+    this.health,
+    10
+  );
 };

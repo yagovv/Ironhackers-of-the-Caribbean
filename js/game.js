@@ -15,16 +15,19 @@ Game.prototype.start = function() {
       this.moveAll();
       this.boat.cannonBalls.forEach(element => {
         this.checkImpacts(this.boat2, element);
+        element.lifetime -= 1;
       });
       this.boat2.cannonBalls.forEach(element => {
         this.checkImpacts(this.boat, element);
+        element.lifetime -= 1;
       });
-     
+     this.boat.deleteCannonBall();
+     this.boat2.deleteCannonBall();
       frames++;
-      if (frames == 500) {
+      if (frames == 5000) {
         this.sea.changeWind();
       }
-      if (frames >= 1000) {
+      if (frames >= 10000) {
         frames = 0;
       }
     }.bind(this),
@@ -96,14 +99,15 @@ Game.prototype.clear = function() {
 };
 Game.prototype.checkImpacts = function(boat, cannonBall) {
   if (
-    cannonBall.x < boat.x + boat.width &&
+    cannonBall.x + cannonBall.radius < boat.x + boat.width &&
     cannonBall.x + cannonBall.radius > boat.x &&
-    cannonBall.y < boat.y + boat.height &&
+    cannonBall.y + cannonBall.radius < boat.y + boat.height &&
     cannonBall.y + cannonBall.radius > boat.y
   ) {
+    cannonBall.impacted = true;
+    cannonBall.lifetime = 0;
     this.handleImpact(boat);
-      console.log("IMPACTO!!");
-
+    console.log("IMPACTO!!");
   }
 };
 Game.prototype.handleImpact = function(boat) {
