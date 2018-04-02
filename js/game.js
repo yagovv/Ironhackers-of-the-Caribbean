@@ -2,13 +2,15 @@ function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
   this.player = new Player(this);
-  this.boat = new Boat(this, 100, 100);
+  this.boat = new Boat(this, 300, 300);
+  // this.boat2 = new Boat(this, 300, 300);
   this.sea = new Sea(this);
 }
 
 Game.prototype.start = function() {
   this.drawAll();
   this.moveAll();
+  // this.checkImpacts();
 };
 
 Game.prototype.clear = function() {
@@ -53,15 +55,16 @@ Game.prototype.drawAll = function() {
     function() {
       this.clear();
       this.boat.draw();
+      // this.boat2.draw();
       this.boat.cannonBalls.forEach(element => {
         element.draw();
       });
       this.sea.drawWind();
       frames++;
-      if(frames == 500){
+      if (frames == 500) {
         this.sea.changeWind();
       }
-      if(frames >= 1000){
+      if (frames >= 1000) {
         frames = 0;
       }
       //draws
@@ -78,8 +81,19 @@ Game.prototype.moveAll = function() {
       });
     }.bind(this),
     18
-  ); 
+  );
 };
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
+
+Game.prototype.checkImpacts = function(boat, cannonBall) {
+  //  Algoritmo flama de deteccion de colisiones entre
+  //  bolas y barcos 
+  if(true){
+    this.handleImpact(boat);
+  }
+};
+Game.prototype.handleImpact = function(boat) {
+  boat.health -= 10;
+}

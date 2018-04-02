@@ -4,6 +4,7 @@ function Boat(game, x, y) {
   this.x = x;
   this.y = y;
   this.angle = 270;
+  this.maxSpeed = 1;
   this.speed = 0;
   this.level = 1;
   this.anchorDeployed = true;
@@ -137,6 +138,8 @@ Boat.prototype.draw = function() {
   this.ctx.rotate(-angleInRadians);
   this.ctx.translate(-this.x, -this.y);
 
+  this.healthIndicator();
+
   // this.drawHitbox("brown");
 };
 Boat.prototype.drawWaves = function() {};
@@ -154,4 +157,8 @@ Boat.prototype.drawMissed = function(x,y) {
   this.ctx.fillStyle = "white";
   this.ctx.fillRect(x,y,10,10);
 };
-Boat.prototype.healthIndicator = function() {};
+Boat.prototype.healthIndicator = function() {
+  this.ctx.strokeRect(this.x - this.img.width/2 -10, this.y + this.img.height, 100, 10);
+  this.ctx.fillStyle = "green";
+  this.ctx.fillRect(this.x - this.img.width/2 - 10, this.y + this.img.height, this.health, 10);
+};

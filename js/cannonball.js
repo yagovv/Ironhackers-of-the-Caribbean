@@ -31,4 +31,3 @@ CannonBall.prototype.move = function() {
       this.y + this.speed * Math.sin(angleRad - Math.PI / 2) + this.inertia[1];
   }
 };
-
