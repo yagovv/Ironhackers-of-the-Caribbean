@@ -2,7 +2,7 @@ function Sea(game) {
   this.winds = ["south", "north", "west", "east"];
   this.canvas = game.canvas;
   this.ctx = game.ctx;
-  this.wind = this.winds[0];
+  this.wind = this.winds[1];
   this.storm = 0; //Storm from 0 to 3
 }
 Sea.prototype.changeWind = function() {

@@ -3,7 +3,7 @@ function Boat(game, x, y) {
   this.ctx = game.ctx;
   this.x = x;
   this.y = y;
-  this.angle = 270;
+  this.angle = 0;
   this.maxSpeed = 1;
   this.speed = 0;
   this.level = 1;
@@ -16,6 +16,7 @@ function Boat(game, x, y) {
   this.cannonBalls = [];
   this.width = 50;
   this.height = 80;
+  this.sails = 0; //0 for no sails, 1, for low, 2, for medium, 3 for high
   // this.inertia = [];
 }
 
@@ -90,40 +91,63 @@ Boat.prototype.deleteCannonBall = function() {
 };
 Boat.prototype.rotateLeft = function() {
   this.angle -= 3;
+  if(this.angle < 0){
+    this.angle = 357;
+  }
 };
 Boat.prototype.rotateRight = function() {
   this.angle += 3;
+  if(this.angle == 360){
+    this.angle = 0;
+  }
 };
 Boat.prototype.move = function() {
   var angleRad = this.angle * (Math.PI / 180); //angle in radians
   this.x = this.x + this.speed * Math.cos(angleRad);
   this.y = this.y + this.speed * Math.sin(angleRad);
-  //this.inertia[0] =
-  //this.inertia[1] = this.speed * Math.sin(angleRad);
 };
 Boat.prototype.raiseSails = function() {
-  if (this.speed >= 0.2) {
-    this.speed -= 0.2;
+  if(this.sails>0){
+    this.sails--;
   }
 };
 Boat.prototype.lowerSails = function() {
-  if (this.speed <= 0.6) {
-    this.speed += 0.2;
+  if(this.sails<3){
+    this.sails++;
   }
 };
+Boat.prototype.getDirection = function() {
+  if(this.angle <=210 && this.angle > 150){
+    return "east";
+  }
+  if(this.angle >=330 || this.angle < 30){
+    return "west";
+  }
+  if(this.angle <=120 && this.angle > 60){
+    return "north";
+  }
+  if(this.angle <=300 && this.angle > 240){
+    return "south";
+  }
+}
 Boat.prototype.draw = function() {
   var width = this.img.width;
   var height = this.img.height;
-
+  var boatX = -width / 2;
+  var boatY = -height / 2;
   var angleInRadians = this.angle * (Math.PI / 180);
-  this.ctx.translate(this.x + this.img.width/2, this.y + this.img.height/2);
+  this.ctx.translate(this.x, this.y);
   this.ctx.rotate(angleInRadians);
   this.ctx.drawImage(this.img, -width / 2, -height / 2, width, height);
+  // this.ctx.beginPath();
+  // this.ctx.arc(0, 0, 30, 0, 2*Math.PI);
+  // this.ctx.stroke();
+  // this.ctx.closePath();
   this.ctx.rotate(-angleInRadians);
-  this.ctx.translate(-this.x - this.img.width/2, -this.y - this.img.height/2);
+  this.ctx.translate(-this.x, -this.y);
 
   this.healthIndicator();
-  this.drawHitbox();
+  // this.drawHitbox();
   
 
   // this.drawHitbox("brown");
@@ -135,13 +159,13 @@ Boat.prototype.drawHitbox = function(color) {
   // this.ctx.translate(this.x, this.y);
   // this.ctx.rotate(-angleInRadians);
   // this.ctx.translate(-this.x, -this.y);
-  this.ctx.translate(this.x, this.y);
+  this.ctx.translate(this.x + this.width/2, this.y + this.height/2);
   this.ctx.strokeStyle = "red";
   var angleInRadians = this.angle * (Math.PI / 180);
   this.ctx.rotate(angleInRadians);
-  this.ctx.strokeRect(this.x, this.y, this.width, this.height);
+  this.ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
   this.ctx.rotate(-angleInRadians);
-  this.ctx.translate(-this.x, -this.y);
+  this.ctx.translate(-this.x - this.width/2, -this.y - this.height/2);
 };
 Boat.prototype.drawImpacted = function(x, y) {
   this.ctx.fillStyle = "red";
@@ -154,14 +178,14 @@ Boat.prototype.drawMissed = function(x, y) {
 Boat.prototype.healthIndicator = function() {
   this.ctx.strokeStyle = "black";
   this.ctx.strokeRect(
-    this.x-10,
+    this.x- this.width/2,
     this.y + this.img.height +20,
     100,
     10
   );
   this.ctx.fillStyle = "green";
   this.ctx.fillRect(
-    this.x-10,
+    this.x-this.width/2,
     this.y + this.img.height +20,
     this.health,
     10

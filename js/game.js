@@ -13,6 +13,9 @@ Game.prototype.start = function() {
     function() {
       this.drawAll();
       this.moveAll();
+      this.accelerateBoat(this.boat);
+      this.accelerateBoat(this.boat2);
+      this.windPush();
       this.boat.cannonBalls.forEach(element => {
         this.checkImpacts(this.boat2, element);
         element.lifetime -= 1;
@@ -35,6 +38,30 @@ Game.prototype.start = function() {
   );
   // this.checkImpacts();
 };
+Game.prototype.accelerateBoat = function(){
+  if(this.boat.sails == 0){
+    this.boat.speed = 0;
+  } 
+  if(this.boat.sails == 1){
+    this.boat.speed = this.boat.maxSpeed * 0.1;   
+  }
+  if(this.boat.sails ==2){
+    this.boat.speed = this.boat.maxSpeed *0.2;
+  }
+  if(this.boat.sails ==3){
+    this.boat.speed = this.boat.maxSpeed * 0.3;
+  }
+}
+Game.prototype.windPush = function(){
+  if(this.sea.wind === this.boat.getDirection()){
+    this.boat.maxSpeed = 2;
+    this.boat2.maxSpeed = 2;
+  }
+  if(this.sea.wind != this.boat.getDirection() && this.boat.maxSpeed ==2){
+    this.boat.maxSpeed = 1;
+    this.boat2.maxSpeed = 1;
+  }
+}
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
@@ -72,6 +99,7 @@ Game.prototype.drawGrid = function() {
 };
 Game.prototype.drawAll = function() {
   this.clear();
+  // this.drawGrid();
   // this.scene.draw();
   this.boat.draw();
   this.boat2.draw();
@@ -97,9 +125,14 @@ Game.prototype.moveAll = function() {
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
+Game.prototype.checkColisions = function(){
+  if(this.boat.x + this.boat.width){
+  
+  }
+}
 Game.prototype.checkImpacts = function(boat, cannonBall) {
   if (
-    cannonBall.x + cannonBall.radius < boat.x + boat.width &&
+    cannonBall.x - cannonBall.radius < boat.x + boat.width &&
     cannonBall.x + cannonBall.radius > boat.x &&
     cannonBall.y + cannonBall.radius < boat.y + boat.height &&
     cannonBall.y + cannonBall.radius > boat.y
@@ -107,7 +140,6 @@ Game.prototype.checkImpacts = function(boat, cannonBall) {
     cannonBall.impacted = true;
     cannonBall.lifetime = 0;
     this.handleImpact(boat);
-    console.log("IMPACTO!!");
   }
 };
 Game.prototype.handleImpact = function(boat) {
