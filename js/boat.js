@@ -11,7 +11,6 @@ function Boat(game, x, y) {
   this.level = 1;
   this.anchorDeployed = true;
   this.health = 100;
-  this.sail = 1;
   this.cannonsLoaded = true;
   this.img = new Image();
   this.img.src = "images/boatv2.png";
@@ -28,6 +27,8 @@ function Boat(game, x, y) {
   this.hitCircles.push(new hitCircle(this.game, this.x + 10 * Math.cos(this.angle * Math.PI/180), this.y + 10 * Math.sin(this.angle * Math.PI/180)));  
   this.hitCircles.push(new hitCircle(this.game, this.x + 20 * Math.cos(this.angle * Math.PI/180), this.y + 20 * Math.sin(this.angle * Math.PI/180)));  
   this.hitCircles.push(new hitCircle(this.game, this.x + 25 * Math.cos(this.angle * Math.PI/180), this.y + 25 * Math.sin(this.angle * Math.PI/180)));  
+
+  
 }
 
 Boat.prototype.loadCannons = function() {
@@ -102,13 +103,13 @@ Boat.prototype.deleteCannonBall = function() {
   }
 };
 Boat.prototype.rotateLeft = function() {
-  this.angle -= 3;
+  this.angle -= 0.5;
   if(this.angle < 0){
     this.angle = 357;
   }
 };
 Boat.prototype.rotateRight = function() {
-  this.angle += 3;
+  this.angle += 0.5;
   if(this.angle == 360){
     this.angle = 0;
   }
@@ -153,44 +154,18 @@ Boat.prototype.getDirection = function() {
 Boat.prototype.draw = function() {
   var width = this.img.width;
   var height = this.img.height;
-  var boatX = -width / 2;
-  var boatY = -height / 2;
   var angleInRadians = this.angle * (Math.PI / 180);
   this.ctx.translate(this.x, this.y);
   this.ctx.rotate(angleInRadians + Math.PI/2);
   this.ctx.drawImage(this.img, -width / 2, -height / 2, width, height);
-  this.hitboxX = -this.width/2 * Math.cos(this.angle * (Math.PI / 180));
-  this.hitboxY = -this.height/2 * Math.sin(this.angle * (Math.PI / 180));
-  //DRAWING HITBOX FLAMA
-  // this.ctx.beginPath();
-  // this.ctx.strokeStyle = "red";
-  // this.ctx.strokeRect(
-  //   -this.width/2,
-  //   -this.height/2,
-  //   this.width, 
-  //   this.height);
-  // this.ctx.closePath();
-  //VELITAS
-
   this.sailWidth = 1 + this.speed * 14;
   this.ctx.rotate(-Math.PI/2);
   this.ctx.beginPath();
   this.ctx.fillStyle= "white";
   this.ctx.fillRect(0, -30, this.sailWidth, 60);
+  this.ctx.fillRect
   this.ctx.closePath();
   this.ctx.rotate(Math.PI/2);
-  //-----------
-  //CENTER RED OF BOAT
-  // this.ctx.beginPath();
-  // this.ctx.fillStyle = "red";
-  // this.ctx.arc(0, 0, 3, 0, 2*Math.PI);
-  // this.ctx.fill();
-  // this.ctx.closePath();
-  //------------------
-  // this.ctx.beginPath();
-  // this.ctx.arc(0, 0, 40, 0, 2*Math.PI);
-  // this.ctx.stroke();
-  // this.ctx.closePath();
   this.ctx.rotate(-angleInRadians - Math.PI/2);
   this.ctx.translate(-this.x, -this.y);
   //DRAWING LOS CIRCLES DE LOS WEBS
@@ -200,14 +175,8 @@ Boat.prototype.draw = function() {
   //   this.ctx.stroke();
   //   this.ctx.closePath();
   // });
-
-
   //------------------------------
   this.healthIndicator();
-  // this.drawHitbox();
-  
-
-  // this.drawHitbox("brown");
 };
 Boat.prototype.drawWaves = function() {};
 
@@ -248,3 +217,4 @@ Boat.prototype.healthIndicator = function() {
     10
   );
 };
+
