@@ -16,6 +16,7 @@ Game.prototype.start = function() {
   var frames = 0;
   this.idDraw = setInterval(
     function() {
+      this.checkWinner();
       this.handle();
       this.drawAll();
       this.moveAll();
@@ -144,7 +145,7 @@ Game.prototype.checkColisions = function() {
         Math.abs(e.x - o.x) < e.radius + o.radius &&
         Math.abs(e.y - o.y) < e.radius + o.radius
       ) {
-        if(!this.recentlyCollided){
+        if (!this.recentlyCollided) {
           this.boat.health -= 20;
           this.boat2.health -= 20;
           this.recentlyCollided = true;
@@ -174,10 +175,35 @@ Game.prototype.checkImpacts = function(boat, cannonBall) {
 Game.prototype.handleImpact = function(boat) {
   if (boat.health >= 10) {
     boat.health -= 10;
-  } else {
-    //hundir barco
+  }
+};
+Game.prototype.checkWinner = function() {
+  if (this.boat.health <= 0) {
+    this.printWinner(2);
+    clearInterval(this.idDraw);
+  } else if (this.boat2.health <= 0) {
+    this.printWinner(1);
     clearInterval(this.idDraw);
   }
+};
+Game.prototype.printWinner = function(winner) {
+  setInterval(
+    function() {
+      this.ctx.beginPath();
+      this.ctx.fillStyle = "red";
+      this.ctx.font = "80px Georgia";
+      this.ctx.fillText(
+        "Player " + winner + " WINS",
+        this.canvas.width / 4 - 120,
+        this.canvas.height / 2 - 100
+      );
+      this.ctx.strokeText("Player " + winner + " WINS",
+      this.canvas.width / 4 - 120,
+      this.canvas.height / 2 - 100);
+      this.ctx.closePath();
+    }.bind(this),
+    17
+  );
 };
 Game.prototype.sinkBoat = function(boat) {};
 Game.prototype.setHandlers = function() {
@@ -195,156 +221,120 @@ Game.prototype.setHandlers = function() {
   var DASH_KEY = 189;
   var PERIOD_KEY = 190;
   var that = this;
-  window.addEventListener('keydown', (event)=> {
+  window.addEventListener("keydown", event => {
     switch (event.keyCode) {
       case D_KEY:
-      that.keys.setTrue(event);
+        that.keys.setTrue(event);
         break;
       case A_KEY:
-      that.keys.setTrue(event);
-      that.boat.rotateLeft();
+        that.keys.setTrue(event);
         break;
       case W_KEY:
-      that.keys.setTrue(event);
-      that.boat.lowerSails();
+        that.boat.lowerSails();
         break;
       case S_KEY:
-      that.keys.setTrue(event);
-      that.boat.raiseSails();
+        that.boat.raiseSails();
         break;
       case F_KEY:
-      that.keys.setTrue(event);
-      that.boat.shootLeft();
+        that.keys.setTrue(event);
         break;
       case G_KEY:
-      that.keys.setTrue(event);
-      that.boat.shootRight();
+        that.keys.setTrue(event);
         break;
       case RIGHT_KEY:
-      that.keys.setTrue(event);
-      that.boat2.rotateRight();
+        that.keys.setTrue(event);
         break;
       case LEFT_KEY:
-      that.keys.setTrue(event);
-      that.boat2.rotateLeft();
+        that.keys.setTrue(event);
         break;
       case UP_KEY:
-      that.keys.setTrue(event);
-      that.boat2.lowerSails();
+        that.boat2.lowerSails();
         break;
       case DOWN_KEY:
-      that.keys.setTrue(event);
-      that.boat2.raiseSails();
+        that.boat2.raiseSails();
         break;
       case DASH_KEY:
-      that.keys.setTrue(event);
-      that.boat2.shootRight();
+        that.keys.setTrue(event);
         break;
       case PERIOD_KEY:
-      that.keys.setTrue(event);
-      that.boat2.shootLeft();
+        that.keys.setTrue(event);
         break;
     }
   });
-  window.addEventListener('keyup', (event)=> {
+  window.addEventListener("keyup", event => {
     switch (event.keyCode) {
       case D_KEY:
-      that.keys.setTrue(event);
+        that.keys.setTrue(event);
         break;
       case A_KEY:
-      that.keys.setTrue(event);
-      that.boat.rotateLeft();
-        break;
-      case W_KEY:
-      that.keys.setTrue(event);
-      that.boat.lowerSails();
-        break;
-      case S_KEY:
-      that.keys.setTrue(event);
-      that.boat.raiseSails();
+        that.keys.setTrue(event);
         break;
       case F_KEY:
-      that.keys.setTrue(event);
-      that.boat.shootLeft();
+        that.keys.setTrue(event);
         break;
       case G_KEY:
-      that.keys.setTrue(event);
-      that.boat.shootRight();
+        that.keys.setTrue(event);
         break;
       case RIGHT_KEY:
-      that.keys.setTrue(event);
-      that.boat2.rotateRight();
+        that.keys.setTrue(event);
         break;
       case LEFT_KEY:
-      that.keys.setTrue(event);
-      that.boat2.rotateLeft();
-        break;
-      case UP_KEY:
-      that.keys.setTrue(event);
-      that.boat2.lowerSails();
-        break;
-      case DOWN_KEY:
-      that.keys.setTrue(event);
-      that.boat2.raiseSails();
+        that.keys.setTrue(event);
         break;
       case DASH_KEY:
-      that.keys.setTrue(event);
-      that.boat2.shootRight();
+        that.keys.setTrue(event);
         break;
       case PERIOD_KEY:
-      that.keys.setTrue(event);
-      that.boat2.shootLeft();
+        that.keys.setTrue(event);
         break;
     }
   });
 };
-Game.prototype.handle = function (){
-  if(this.keys.KeyW){
+Game.prototype.handle = function() {
+  if (this.keys.KeyW) {
     this.boat.lowerSails();
   }
-  if(this.keys.KeyA){
+  if (this.keys.KeyA) {
     this.boat.rotateLeft();
   }
-  if(this.keys.KeyS){
+  if (this.keys.KeyS) {
     this.boat.raiseSails();
   }
-  if(this.keys.KeyD){
+  if (this.keys.KeyD) {
     this.boat.rotateRight();
   }
-  if(this.keys.ArrowUp){
+  if (this.keys.ArrowUp) {
     this.boat2.lowerSails();
   }
-  if(this.keys.ArrowDown){
+  if (this.keys.ArrowDown) {
     this.boat2.raiseSails();
   }
-  if(this.keys.ArrowRight){
+  if (this.keys.ArrowRight) {
     this.boat2.rotateRight();
   }
-  if(this.keys.ArrowLeft){
+  if (this.keys.ArrowLeft) {
     this.boat2.rotateLeft();
   }
-  if(this.keys.KeyF){
+  if (this.keys.KeyF) {
     this.boat.shootLeft();
   }
-  if(this.keys.KeyG){
+  if (this.keys.KeyG) {
     this.boat.shootRight();
   }
-  if(this.keys.Slash){
+  if (this.keys.Slash) {
     this.boat2.shootRight();
   }
-  if(this.keys.Period){
+  if (this.keys.Period) {
     this.boat2.shootLeft();
   }
-}
-Game.prototype.boarding = function (){
+};
+Game.prototype.boarding = function() {
   clearInterval(this.idDraw);
-  this.boardingId = setInterval(function(){
-    this.drawBoarding
+  this.boardingId = setInterval(function() {
+    this.drawBoarding;
   }, 17);
-}
-Game.prototype.drawBoarding = function(){
-
-}
+};
+Game.prototype.drawBoarding = function() {};
 
 //poner los handlers en el game en vez de ship
 //para evitar explosiones al crear 2 barcos para 2 players
