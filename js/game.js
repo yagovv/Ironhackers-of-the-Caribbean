@@ -1,14 +1,16 @@
 function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
-  this.player = new Player(this);
-  this.boat = new Boat(this, 200, 200);
-  this.boat2 = new Boat(this, 400, 400);
+  // this.player = new Player(this);
+  this.boat = new Boat(this, 100, 250);
+  this.boat2 = new Boat(this, 500, 250);
+  this.boat2.angle = 180;
   this.sea = new Sea(this);
   this.soundtrack = new Audio("sounds/soundtrack.mp3");
+  this.recentlyCollided = false;
 }
 Game.prototype.start = function() {
-  this.soundtrack.play();
+  // this.soundtrack.play();
   this.setHandlers();
   var frames = 0;
   this.idDraw = setInterval(
@@ -19,6 +21,7 @@ Game.prototype.start = function() {
       this.accelerateBoat(this.boat2);
       this.windPush(this.boat);
       this.windPush(this.boat2);
+      this.checkColisions();
       this.boat.cannonBalls.forEach(element => {
         this.checkImpacts(this.boat2, element);
         element.lifetime -= 1;
@@ -27,8 +30,8 @@ Game.prototype.start = function() {
         this.checkImpacts(this.boat, element);
         element.lifetime -= 1;
       });
-     this.boat.deleteCannonBall();
-     this.boat2.deleteCannonBall();
+      this.boat.deleteCannonBall();
+      this.boat2.deleteCannonBall();
       frames++;
       if (frames == 5000) {
         this.sea.changeWind();
@@ -41,31 +44,34 @@ Game.prototype.start = function() {
   );
   // this.checkImpacts();
 };
-Game.prototype.accelerateBoat = function(boat){
-  if(boat.sails == 0){
+Game.prototype.accelerateBoat = function(boat) {
+  if (boat.sails == 0) {
     boat.speed = 0;
-  } 
-  if(boat.sails == 1){
-    boat.speed = boat.maxSpeed * 0.1;   
   }
-  if(boat.sails ==2){
-    boat.speed = boat.maxSpeed *0.2;
+  if (boat.sails == 1) {
+    boat.speed = boat.maxSpeed * 0.1;
   }
-  if(boat.sails ==3){
+  if (boat.sails == 2) {
+    boat.speed = boat.maxSpeed * 0.2;
+  }
+  if (boat.sails == 3) {
     boat.speed = boat.maxSpeed * 0.3;
   }
-}
-Game.prototype.windPush = function(boat){
-  if(this.sea.wind === boat.getDirection()){
+};
+Game.prototype.windPush = function(boat) {
+  if (this.sea.wind === boat.getDirection()) {
     boat.maxSpeed = 2;
   }
-  if(this.sea.wind != boat.getDirection() && (boat.maxSpeed ==2 || boat.maxSpeed ==0.5)){
+  if (
+    this.sea.wind != boat.getDirection() &&
+    (boat.maxSpeed == 2 || boat.maxSpeed == 0.5)
+  ) {
     boat.maxSpeed = 1.5;
   }
-  if(this.sea.backWind == boat.getDirection()){
+  if (this.sea.backWind == boat.getDirection()) {
     boat.maxSpeed = 0.5;
   }
-}
+};
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
@@ -129,44 +135,49 @@ Game.prototype.moveAll = function() {
 Game.prototype.clear = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
-Game.prototype.checkColisions = function(){
-  if(this.boat.x + this.boat.width){
-  
-  }
-}
+Game.prototype.checkColisions = function() {
+  this.boat.hitCircles.forEach(e => {
+    this.boat2.hitCircles.forEach(o => {
+      if (
+        Math.abs(e.x - o.x) < e.radius + o.radius &&
+        Math.abs(e.y - o.y) < e.radius + o.radius
+      ) {
+        if(!this.recentlyCollided){
+          this.boat.health -= 20;
+          this.boat2.health -= 20;
+          this.recentlyCollided = true;
+          setTimeout(() => {
+            this.recentlyCollided = false;
+          }, 7000);
+        }
+        this.boat.speed = 0;
+        this.boat2.speed = 0;
+      }
+    });
+  });
+};
 Game.prototype.checkImpacts = function(boat, cannonBall) {
-  //algoritmo de la muerte que solo causa sufrimiento y destrucción
-  // if (
-  //   cannonBall.x - cannonBall.radius < boat.x + boat.width &&
-  //   cannonBall.x + cannonBall.radius > boat.x &&
-  //   cannonBall.y + cannonBall.radius < boat.y + boat.height &&
-  //   cannonBall.y + cannonBall.radius > boat.y
-  // ) {
-  //   cannonBall.impacted = true;
-  //   cannonBall.lifetime = 0;
-  //   this.handleImpact(boat);
-  // }
   //algoritmo maravilloso que trae vida y felicidad
   boat.hitCircles.forEach(e => {
-    if( Math.abs(e.x - cannonBall.x) < (e.radius + cannonBall.radius) &&
-    Math.abs(e.y - cannonBall.y) < (e.radius + cannonBall.radius) ) {
+    if (
+      Math.abs(e.x - cannonBall.x) < e.radius + cannonBall.radius &&
+      Math.abs(e.y - cannonBall.y) < e.radius + cannonBall.radius
+    ) {
       cannonBall.impacted = true;
       cannonBall.lifetime = 0;
       this.handleImpact(boat);
     }
   });
-  
 };
 Game.prototype.handleImpact = function(boat) {
-  if(boat.health >= 10){
+  if (boat.health >= 10) {
     boat.health -= 10;
-  }else{
+  } else {
+    //hundir barco
     clearInterval(this.idDraw);
   }
-
-  
-  
 };
+Game.prototype.sinkBoat = function(boat) {};
 Game.prototype.setHandlers = function() {
   var W_KEY = 87;
   var A_KEY = 65;
@@ -184,7 +195,6 @@ Game.prototype.setHandlers = function() {
   document.onkeydown = function(event) {
     switch (event.keyCode) {
       case D_KEY:
-      
         this.boat.rotateRight();
         break;
       case A_KEY:
@@ -223,5 +233,15 @@ Game.prototype.setHandlers = function() {
     }
   }.bind(this);
 };
+Game.prototype.boarding = function (){
+  clearInterval(this.idDraw);
+  this.boardingId = setInterval(function(){
+    this.drawBoarding
+  }, 17);
+}
+Game.prototype.drawBoarding = function(){
+
+}
+
 //poner los handlers en el game en vez de ship
 //para evitar explosiones al crear 2 barcos para 2 players
