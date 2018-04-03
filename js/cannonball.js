@@ -1,11 +1,11 @@
-function CannonBall(ship, side, inertia) {
+function CannonBall(ship, side, inertia, x, y) {
   this.canvas = ship.canvas;
   this.ctx = ship.ctx;
-  this.x = ship.x;
-  this.y = ship.y;
+  this.x = x;
+  this.y = y;
   this.side = side;
   this.angle = ship.angle;
-  this.radius = 5;
+  this.radius = 2.5;
   this.speed = 1;
   this.lifetime = 100;
   this.inertia = inertia;
