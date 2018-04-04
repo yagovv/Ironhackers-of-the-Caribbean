@@ -3,17 +3,16 @@ function Boat(game, x, y) {
   this.ctx = game.ctx;
   this.x = x;
   this.y = y;
-  this.centerX;
-  this.centerY;
   this.angle = 0;
-  this.maxSpeed = 1.5;
+  this.maxSpeed = 1;
   this.speed = 0;
   this.level = 1;
   this.anchorDeployed = true;
   this.health = 100;
+  this.loading = 100;
   this.cannonsLoaded = true;
   this.img = new Image();
-  this.img.src = "images/boatv2.png";
+  this.img.src = "images/boatv3.png";
   this.cannonBalls = [];
   this.width = 27;
   this.height = 80;
@@ -28,18 +27,16 @@ function Boat(game, x, y) {
   this.hitCircles.push(new hitCircle(this.game, this.x + 20 * Math.cos(this.angle * Math.PI/180), this.y + 20 * Math.sin(this.angle * Math.PI/180)));  
   this.hitCircles.push(new hitCircle(this.game, this.x + 25 * Math.cos(this.angle * Math.PI/180), this.y + 25 * Math.sin(this.angle * Math.PI/180)));  
 
-  
+  this.healthIndicator = new HealthIndicator(game, this);
+  this.loadingIndicator = new LoadingIndicator(game, this);
 }
 
 Boat.prototype.loadCannons = function() {
   if (!this.cannonsLoaded) {
-    console.log("loading cannons!");
-    setTimeout(
-      function() {
-        this.cannonsLoaded = true;
-      }.bind(this),
-      1000
-    );
+    this.loading+= 0.5;
+    if(this.loading == 100){
+      this.cannonsLoaded = true;
+    }
   }
 };
 Boat.prototype.shootLeft = function() {
@@ -51,6 +48,7 @@ Boat.prototype.shootLeft = function() {
     this.cannonBalls.push(new CannonBall(this, "left", inertia, this.x + 14 * Math.cos(angleRad), this.y + 13 * Math.sin(angleRad)));
     this.cannonBalls.push(new CannonBall(this, "left", inertia, this.x - 8 * Math.cos(angleRad), this.y  -  8* Math.sin(angleRad)));
     this.cannonsLoaded = false;
+    this.loading = 0;
     this.loadCannons();
     this.deleteCannonBall();
   }
@@ -64,6 +62,7 @@ Boat.prototype.shootRight = function() {
     this.cannonBalls.push(new CannonBall(this, "right", inertia, this.x + 14 * Math.cos(angleRad), this.y + 13 * Math.sin(angleRad)));
     this.cannonBalls.push(new CannonBall(this, "right", inertia, this.x - 8 * Math.cos(angleRad), this.y  -  8* Math.sin(angleRad)));
     this.cannonsLoaded = false;
+    this.loading = 0;
     this.loadCannons();
     this.deleteCannonBall();
   }
@@ -157,18 +156,17 @@ Boat.prototype.draw = function() {
   var angleInRadians = this.angle * (Math.PI / 180);
   this.ctx.translate(this.x, this.y);
   this.ctx.rotate(angleInRadians + Math.PI/2);
-  this.ctx.drawImage(this.img, -width / 2, -height / 2, width, height);
+  this.ctx.drawImage(this.img, -width / 2, -7.5 -height / 2, width, height);
   this.sailWidth = 1 + this.speed * 14;
   this.ctx.rotate(-Math.PI/2);
   this.ctx.beginPath();
   this.ctx.fillStyle= "white";
   this.ctx.fillRect(0, -30, this.sailWidth, 60);
-  this.ctx.fillRect
   this.ctx.closePath();
   this.ctx.rotate(Math.PI/2);
   this.ctx.rotate(-angleInRadians - Math.PI/2);
   this.ctx.translate(-this.x, -this.y);
-  //DRAWING LOS CIRCLES DE LOS WEBS
+  // DRAWING LOS CIRCLES DE LOS WEBS
   // this.hitCircles.forEach(e => {
   //   this.ctx.beginPath();
   //   this.ctx.arc(e.x, e.y, e.radius, 0, 2*Math.PI);
@@ -176,9 +174,10 @@ Boat.prototype.draw = function() {
   //   this.ctx.closePath();
   // });
   //------------------------------
-  this.healthIndicator();
+  this.healthIndicator.draw();
+  this.loadingIndicator.draw();
 };
-Boat.prototype.drawWaves = function() {};
+Boat.prototype.drawPath = function() {};
 
 Boat.prototype.drawHitbox = function(color) {
   // this.ctx.fillStyle = color;
@@ -200,21 +199,5 @@ Boat.prototype.drawImpacted = function(x, y) {
 Boat.prototype.drawMissed = function(x, y) {
   this.ctx.fillStyle = "white";
   this.ctx.fillRect(x, y, 10, 10);
-};
-Boat.prototype.healthIndicator = function() {
-  this.ctx.strokeStyle = "black";
-  this.ctx.strokeRect(
-    this.x - this.height/2 -10,
-    this.y + this.height/2,
-    100,
-    10
-  );
-  this.ctx.fillStyle = "green";
-  this.ctx.fillRect(
-    this.x -this.height/2 -10,
-    this.y + this.height/2,
-    this.health,
-    10
-  );
 };
 

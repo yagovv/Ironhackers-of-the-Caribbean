@@ -14,7 +14,6 @@ function Keys (game) {
   this.Period = false;
 }
 Keys.prototype.setTrue = function (e){
-  console.log(e);
   switch(event.type){
     case "keydown":
       this[e.code]=true;

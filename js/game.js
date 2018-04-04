@@ -1,3 +1,12 @@
+/*TODO:
+
+  AÑADIR ROSA DE LOS VIENTOS
+  AÑADIR EFECTOS DE AGUA
+  AÑADIR ISLAS
+  AÑADIR TORMENTAS
+  MENU PARA ELEGIR BARCO (CON PERSONAJES)
+  INTRODUCCION CON "HISTORIA"
+*/
 function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
@@ -6,7 +15,7 @@ function Game(canvas, ctx) {
   this.boat2 = new Boat(this, 500, 250);
   this.boat2.angle = 180;
   this.sea = new Sea(this);
-  this.soundtrack = new Audio("sounds/soundtrack.mp3");
+  this.soundtrack = new Audio("sounds/fight_bso.mp3");
   this.recentlyCollided = false;
   this.keys = new Keys(this);
 }
@@ -22,6 +31,8 @@ Game.prototype.start = function() {
       this.moveAll();
       this.accelerateBoat(this.boat);
       this.accelerateBoat(this.boat2);
+      this.boat.loadCannons();
+      this.boat2.loadCannons();
       this.windPush(this.boat);
       this.windPush(this.boat2);
       this.checkColisions();
@@ -36,7 +47,7 @@ Game.prototype.start = function() {
       this.boat.deleteCannonBall();
       this.boat2.deleteCannonBall();
       frames++;
-      if (frames == 5000) {
+      if (frames % 1000 == 0) {
         this.sea.changeWind();
       }
       if (frames >= 10000) {
@@ -69,7 +80,7 @@ Game.prototype.windPush = function(boat) {
     this.sea.wind != boat.getDirection() &&
     (boat.maxSpeed == 2 || boat.maxSpeed == 0.5)
   ) {
-    boat.maxSpeed = 1.5;
+    boat.maxSpeed = 1;
   }
   if (this.sea.backWind == boat.getDirection()) {
     boat.maxSpeed = 0.5;
@@ -135,9 +146,6 @@ Game.prototype.moveAll = function() {
     e.move();
   });
 };
-Game.prototype.clear = function() {
-  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-};
 Game.prototype.checkColisions = function() {
   this.boat.hitCircles.forEach(e => {
     this.boat2.hitCircles.forEach(o => {
@@ -172,6 +180,9 @@ Game.prototype.checkImpacts = function(boat, cannonBall) {
     }
   });
 };
+Game.prototype.checkBoundaries = function(){
+  // if()
+}
 Game.prototype.handleImpact = function(boat) {
   if (boat.health >= 10) {
     boat.health -= 10;
@@ -335,6 +346,3 @@ Game.prototype.boarding = function() {
   }, 17);
 };
 Game.prototype.drawBoarding = function() {};
-
-//poner los handlers en el game en vez de ship
-//para evitar explosiones al crear 2 barcos para 2 players
