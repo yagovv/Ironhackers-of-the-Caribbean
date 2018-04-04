@@ -6,6 +6,8 @@ function Sea(game) {
   this.storm = 0; //Storm from 0 to 3
   this.windArrow = new Image();
   this.windArrow.src = 'images/arrow-wind.png';
+  this.seaSprite = new Image();
+
 }
 Sea.prototype.changeWind = function() {
   var index = Math.floor(Math.random() * 4);
@@ -63,3 +65,8 @@ Sea.prototype.drawWind = function() {
   this.ctx.translate(-x-width/2, -y-width/2);
   // this.ctx.drawImage(this.windArrow, x, y, );
 };
+Sea.prototype.drawSea = function() {
+  var multiplos = this.game.canvas.width / 40;
+  //hay que ir de 0 a 40, usando multiplos*40;
+  
+}

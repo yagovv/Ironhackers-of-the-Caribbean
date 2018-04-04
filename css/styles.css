@@ -2,10 +2,16 @@ canvas {
   background-color: #266ee2;
   border: 1px solid gray;
   margin: 0 auto;
-  position: absolute;
-  left: 30%;
-  top: 15%;
+  align-self: center;
 }
 body {
   background-color: black;
+  
+}
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  /* height: 100vh; */
 }
