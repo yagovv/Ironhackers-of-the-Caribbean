@@ -87,16 +87,7 @@ Boat.prototype.deleteCannonBall = function() {
       var y = this.cannonBalls[i].y;
       if (!this.cannonBalls[i].impacted) {
         //DIBUJO GUAY DE AGUA (al menos antes del refactor xd)
-        var missedId = setInterval(
-          function() {
             this.drawMissed(x, y);
-          }.bind(this),
-          17
-        );
-        setTimeout(function() {
-          clearInterval(missedId);
-          console.log("cleared");
-        }, 1000);
         //--------------------
       } else {
         var impactedId = setInterval(
