@@ -90,16 +90,7 @@ Boat.prototype.deleteCannonBall = function() {
             this.drawMissed(x, y);
         //--------------------
       } else {
-        var impactedId = setInterval(
-          function() {
             this.drawImpacted(x, y);
-          }.bind(this),
-          17
-        );
-        setTimeout(function() {
-          clearInterval(impactedId);
-          console.log("impacted");
-        }, 1000);
       }
       this.cannonBalls.splice(i, 1);
     }
