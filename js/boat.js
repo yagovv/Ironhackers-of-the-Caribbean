@@ -9,8 +9,10 @@ function Boat(game, x, y) {
   this.level = 1;
   this.anchorDeployed = true;
   this.health = 100;
-  this.loading = 100;
-  this.cannonsLoaded = true;
+  this.loadingRight = 50;
+  this.loadingLeft = 50;
+  this.rightCannonsLoaded = true;
+  this.leftCannonsLoaded = true;
   this.img = new Image();
   this.img.src = "images/boatv3.png";
   this.cannonBalls = [];
@@ -28,42 +30,53 @@ function Boat(game, x, y) {
   this.hitCircles.push(new hitCircle(this.game, this.x + 25 * Math.cos(this.angle * Math.PI/180), this.y + 25 * Math.sin(this.angle * Math.PI/180)));  
 
   this.healthIndicator = new HealthIndicator(game, this);
-  this.loadingIndicator = new LoadingIndicator(game, this);
+  this.loadingIndicator = new LoadingIndicators(game, this);
 }
-
-Boat.prototype.loadCannons = function() {
-  if (!this.cannonsLoaded) {
-    this.loading+= 0.5;
-    if(this.loading == 100){
-      this.cannonsLoaded = true;
+Boat.prototype.loadCannons = function (){
+  this.loadLeftCannons();
+  this.loadRightCannons();
+}
+Boat.prototype.loadLeftCannons = function() {
+  if (!this.leftCannonsLoaded) {
+    this.loadingLeft+= 0.25;
+    if(this.loadingLeft == 50){
+      this.leftCannonsLoaded = true;
     }
   }
 };
+Boat.prototype.loadRightCannons = function() {
+  if (!this.rightCannonsLoaded) {
+    this.loadingRight+= 0.25;
+    if(this.loadingRight == 50){
+      this.rightCannonsLoaded = true;
+    }
+  }
+}
 Boat.prototype.shootLeft = function() {
-  if (this.cannonsLoaded) {
+  if (this.leftCannonsLoaded) {
     var inertia = [];
     var angleRad = this.angle * (Math.PI / 180);
     inertia[0] = this.speed * Math.cos(angleRad);
     inertia[1] = this.speed * Math.sin(angleRad);
     this.cannonBalls.push(new CannonBall(this, "left", inertia, this.x + 14 * Math.cos(angleRad), this.y + 13 * Math.sin(angleRad)));
     this.cannonBalls.push(new CannonBall(this, "left", inertia, this.x - 8 * Math.cos(angleRad), this.y  -  8* Math.sin(angleRad)));
-    this.cannonsLoaded = false;
-    this.loading = 0;
-    this.loadCannons();
+    this.leftCannonsLoaded = false;
+    this.loadingLeft = 0;
+    this.loadLeftCannons();
     this.deleteCannonBall();
   }
 };
 Boat.prototype.shootRight = function() {
-  if (this.cannonsLoaded) {
+  if (this.rightCannonsLoaded) {
     var inertia = [];
     var angleRad = this.angle * (Math.PI / 180);
     inertia[0] = this.speed * Math.cos(angleRad);
     inertia[1] = this.speed * Math.sin(angleRad);
     this.cannonBalls.push(new CannonBall(this, "right", inertia, this.x + 14 * Math.cos(angleRad), this.y + 13 * Math.sin(angleRad)));
     this.cannonBalls.push(new CannonBall(this, "right", inertia, this.x - 8 * Math.cos(angleRad), this.y  -  8* Math.sin(angleRad)));
-    this.cannonsLoaded = false;
-    this.loading = 0;
-    this.loadCannons();
+    this.rightCannonsLoaded = false;
+    this.loadingRight = 0;
+    this.loadRightCannons();
     this.deleteCannonBall();
   }
 };
