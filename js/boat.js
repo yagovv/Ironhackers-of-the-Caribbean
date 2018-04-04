@@ -102,14 +102,14 @@ Boat.prototype.deleteCannonBall = function() {
   }
 };
 Boat.prototype.rotateLeft = function() {
-  this.angle -= 0.5;
+  this.angle -= 0.2;
   if(this.angle < 0){
     this.angle = 357;
   }
 };
 Boat.prototype.rotateRight = function() {
-  this.angle += 0.5;
-  if(this.angle == 360){
+  this.angle += 0.2;
+  if(this.angle >= 360){
     this.angle = 0;
   }
 };

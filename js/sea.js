@@ -7,7 +7,8 @@ function Sea(game) {
   this.windArrow = new Image();
   this.windArrow.src = 'images/arrow-wind.png';
   this.seaSprite = new Image();
-
+  this.seaSprite.src = 'images/sea_sprite.png';
+  this.frameIndex = 1;
 }
 Sea.prototype.changeWind = function() {
   var index = Math.floor(Math.random() * 4);
@@ -28,7 +29,9 @@ Sea.prototype.changeWind = function() {
   }
 };
 Sea.prototype.createIsland = function() {};
-Sea.prototype.draw = function() {};
+Sea.prototype.draw = function() {
+  this.drawSea();
+};
 Sea.prototype.drawWind = function() {
   // rosa fashion de los vientos
   var angle = 0;
@@ -66,7 +69,19 @@ Sea.prototype.drawWind = function() {
   // this.ctx.drawImage(this.windArrow, x, y, );
 };
 Sea.prototype.drawSea = function() {
-  var multiplos = this.game.canvas.width / 40;
+  var multiplos = this.canvas.width / 40;
+  if (this.frameIndex == 1){
+    for (var i = 0; i < 40; i++) {
+      for (var j = 0; j < 40 ; j++) {
+        this.ctx.drawImage(this.seaSprite, this.seaSprite.width/2 + 1, 10, this.seaSprite.width/8, this.seaSprite.width/8, multiplos*j, multiplos*i, 40,40);
+      }
+    }
+  }else if(this.frameIndex == -1){
+    for (var i = 0; i < 40; i++) {
+      for (var j = 0; j < 40 ; j++) {
+        this.ctx.drawImage(this.seaSprite, this.seaSprite.width/2 + 20, 10, this.seaSprite.width/8, this.seaSprite.width/8, multiplos*j, multiplos*i, 40,40);
+      }
+  }
   //hay que ir de 0 a 40, usando multiplos*40;
-  
+  }
 }

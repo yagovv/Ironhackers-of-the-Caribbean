@@ -47,6 +47,9 @@ Game.prototype.start = function() {
       this.boat.deleteCannonBall();
       this.boat2.deleteCannonBall();
       frames++;
+      if (frames % 40 == 0) {
+        this.sea.frameIndex *= -1;
+      } 
       if (frames % 1000 == 0) {
         this.sea.changeWind();
       }
@@ -125,6 +128,7 @@ Game.prototype.drawAll = function() {
   this.clear();
   // this.drawGrid();
   // this.scene.draw();
+  this.sea.draw();
   this.boat.draw();
   this.boat2.draw();
   this.boat.cannonBalls.forEach(element => {
