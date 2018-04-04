@@ -1,7 +1,5 @@
 /*TODO:
 
-  AÑADIR ROSA DE LOS VIENTOS
-  AÑADIR EFECTOS DE AGUA
   AÑADIR ISLAS
   AÑADIR TORMENTAS
   MENU PARA ELEGIR BARCO (CON PERSONAJES)
@@ -25,6 +23,7 @@ Game.prototype.start = function() {
   var frames = 0;
   this.idDraw = setInterval(
     function() {
+      this.checkBoundaries();
       this.checkWinner();
       this.handle();
       this.drawAll();
@@ -185,7 +184,23 @@ Game.prototype.checkImpacts = function(boat, cannonBall) {
   });
 };
 Game.prototype.checkBoundaries = function(){
-  // if()
+  this.boat.hitCircles.forEach(e => {
+    if(e.x + e.radius >= this.canvas.width || 
+      e.x - e.radius <= 0 ||
+      e.y + e.radius >= this.canvas.height ||
+      e.y - e.radius <= 0){
+      this.boat.speed = 0.1;
+    }
+  });
+  this.boat2.hitCircles.forEach(e => {
+    if(e.x + e.radius >= this.canvas.width || 
+      e.x - e.radius <= 0 ||
+      e.y + e.radius >= this.canvas.height ||
+      e.y - e.radius <= 0){
+      this.boat2.speed = 0.1;
+    }
+  });
+
 }
 Game.prototype.handleImpact = function(boat) {
   if (boat.health >= 10) {
@@ -350,3 +365,6 @@ Game.prototype.boarding = function() {
   }, 17);
 };
 Game.prototype.drawBoarding = function() {};
+Game.prototype.menu = function() {
+
+}

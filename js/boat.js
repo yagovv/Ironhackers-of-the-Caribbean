@@ -104,7 +104,7 @@ Boat.prototype.deleteCannonBall = function() {
 Boat.prototype.rotateLeft = function() {
   this.angle -= 0.2;
   if(this.angle < 0){
-    this.angle = 357;
+    this.angle = 360;
   }
 };
 Boat.prototype.rotateRight = function() {
