@@ -10,8 +10,8 @@ function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
   // this.player = new Player(this);
-  this.boat = new Boat(this, 100, this.canvas.height/2);
-  this.boat2 = new Boat(this, this.canvas.width-100, this.canvas.height/2);
+  this.boat = new Yacht(this, 100, this.canvas.height/2);
+  this.boat2 = new Yacht(this, this.canvas.width-100, this.canvas.height/2);
   this.boat2.angle = 180;
   this.sea = new Sea(this);
   this.soundtrack = new Audio("sounds/fight_bso.mp3");

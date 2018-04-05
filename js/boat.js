@@ -116,7 +116,6 @@ Boat.prototype.shoot = function(side) {
     }
   });
 };
-
 Boat.prototype.shootLeft = function() {
   if (this.leftCannonsLoaded) {
     this.shoot("left");
@@ -228,16 +227,7 @@ Boat.prototype.draw = function() {
   this.cannons.forEach(function(e) {
     e.draw();
   });
-  this.ctx.translate(this.x, this.y);
-  this.ctx.rotate(angleInRadians + Math.PI / 2);
-  this.ctx.rotate(-Math.PI / 2);
-  this.ctx.beginPath();
-  this.ctx.fillStyle = "white";
-  this.ctx.fillRect(0, -30, this.sailWidth, 60);
-  this.ctx.closePath();
-  this.ctx.rotate(Math.PI / 2);
-  this.ctx.rotate(-angleInRadians - Math.PI / 2);
-  this.ctx.translate(-this.x, -this.y);
+  this.drawSails();
   // DRAWING LOS CIRCLES DE LOS WEBS
   // this.hitCircles.forEach(e => {
   //   this.ctx.beginPath();
@@ -277,3 +267,16 @@ Boat.prototype.drawMissed = function(x, y) {
   this.ctx.fillStyle = "white";
   this.ctx.fillRect(x, y, 10, 10);
 };
+Boat.prototype.drawSails = function (){
+  var angleInRadians = this.angle * (Math.PI / 180);
+  this.ctx.translate(this.x, this.y);
+  this.ctx.rotate(angleInRadians + Math.PI / 2);
+  this.ctx.rotate(-Math.PI / 2);
+  this.ctx.beginPath();
+  this.ctx.fillStyle = "white";
+  this.ctx.fillRect(0, -30, this.sailWidth, 60);
+  this.ctx.closePath();
+  this.ctx.rotate(Math.PI / 2);
+  this.ctx.rotate(-angleInRadians - Math.PI / 2);
+  this.ctx.translate(-this.x, -this.y);
+}
