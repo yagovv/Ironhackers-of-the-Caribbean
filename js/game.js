@@ -57,7 +57,7 @@ Game.prototype.intro = function() {
   );
 };
 Game.prototype.start = function() {
-  // this.soundtrack.play();
+  this.soundtrack.play();
   this.setHandlers();
   var frames = 0;
   this.idDraw = setInterval(
