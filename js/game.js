@@ -10,8 +10,8 @@ function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
   // this.player = new Player(this);
-  this.boat = new Boat(this, 100, this.canvas.height/2);
-  this.boat2 = new Boat(this, this.canvas.width-100, this.canvas.height/2);
+  this.boat = new Yacht(this, 100, this.canvas.height/2);
+  this.boat2 = new Yacht(this, this.canvas.width-100, this.canvas.height/2);
   this.boat2.angle = 180;
   this.sea = new Sea(this);
   this.soundtrack = new Audio("sounds/fight_bso.mp3");
@@ -19,7 +19,7 @@ function Game(canvas, ctx) {
   this.keys = new Keys(this);
 }
 Game.prototype.start = function() {
-  this.soundtrack.play();
+  // this.soundtrack.play();
   this.setHandlers();
   var frames = 0;
   this.idDraw = setInterval(
@@ -27,8 +27,8 @@ Game.prototype.start = function() {
       this.checkBoundaries();
       this.checkWinner();
       this.handle();
-      this.drawAll();
       this.moveAll();
+      this.drawAll();
       this.accelerateBoat(this.boat);
       this.accelerateBoat(this.boat2);
       this.boat.loadCannons();
@@ -129,14 +129,15 @@ Game.prototype.drawAll = function() {
   // this.drawGrid();
   // this.scene.draw();
   this.sea.draw();
-  this.boat.draw();
-  this.boat2.draw();
   this.boat.cannonBalls.forEach(element => {
     element.draw();
   });
   this.boat2.cannonBalls.forEach(element => {
     element.draw();
   });
+  this.boat.draw();
+  this.boat2.draw();
+ 
   this.sea.drawWind();
   //draws
 };
