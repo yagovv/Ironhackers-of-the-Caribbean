@@ -19,7 +19,7 @@ function Game(canvas, ctx) {
   this.keys = new Keys(this);
 }
 Game.prototype.start = function() {
-  this.soundtrack.play();
+  // this.soundtrack.play();
   this.setHandlers();
   var frames = 0;
   this.idDraw = setInterval(
