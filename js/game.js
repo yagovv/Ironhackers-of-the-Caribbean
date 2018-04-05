@@ -27,8 +27,8 @@ Game.prototype.start = function() {
       this.checkBoundaries();
       this.checkWinner();
       this.handle();
-      this.drawAll();
       this.moveAll();
+      this.drawAll();
       this.accelerateBoat(this.boat);
       this.accelerateBoat(this.boat2);
       this.boat.loadCannons();
@@ -129,14 +129,15 @@ Game.prototype.drawAll = function() {
   // this.drawGrid();
   // this.scene.draw();
   this.sea.draw();
-  this.boat.draw();
-  this.boat2.draw();
   this.boat.cannonBalls.forEach(element => {
     element.draw();
   });
   this.boat2.cannonBalls.forEach(element => {
     element.draw();
   });
+  this.boat.draw();
+  this.boat2.draw();
+ 
   this.sea.drawWind();
   //draws
 };

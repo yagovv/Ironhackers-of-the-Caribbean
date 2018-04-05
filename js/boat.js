@@ -15,7 +15,7 @@ function Boat(game, x, y) {
   this.rightCannonsLoaded = true;
   this.leftCannonsLoaded = true;
   this.img = new Image();
-  this.img.src = "images/boatv3.png";
+  this.img.src = "images/boatv2no.png";
   this.cannonBalls = [];
   this.width = 27;
   this.height = 80;
@@ -77,11 +77,9 @@ Boat.prototype.createCannons = function(number) {
   var k = 0;
   for (var i = 0; i < number; i++) {
     if (i < number / 2) {
-
       this.cannons.push(new Cannon(this.game, this, j, "right"));
       j++;
     } else {
-      
       this.cannons.push(new Cannon(this.game, this, k, "left"));
       k++;
     }
