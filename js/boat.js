@@ -77,9 +77,11 @@ Boat.prototype.createCannons = function(number) {
   var k = 0;
   for (var i = 0; i < number; i++) {
     if (i < number / 2) {
+
       this.cannons.push(new Cannon(this.game, this, j, "right"));
       j++;
     } else {
+      
       this.cannons.push(new Cannon(this.game, this, k, "left"));
       k++;
     }
