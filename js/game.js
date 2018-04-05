@@ -10,16 +10,54 @@ function Game(canvas, ctx) {
   this.canvas = canvas;
   this.ctx = ctx;
   // this.player = new Player(this);
-  this.boat = new Yacht(this, 100, this.canvas.height/2);
-  this.boat2 = new Yacht(this, this.canvas.width-100, this.canvas.height/2);
+  this.boat = new Yacht(this, 100, this.canvas.height / 2);
+  this.boat2 = new Yacht(this, this.canvas.width - 100, this.canvas.height / 2);
   this.boat2.angle = 180;
   this.sea = new Sea(this);
   this.soundtrack = new Audio("sounds/fight_bso.mp3");
   this.recentlyCollided = false;
   this.keys = new Keys(this);
+  this.scene = new Scene(this);
 }
+Game.prototype.intro = function() {
+  var frames = 0;
+
+  this.idIntro = setInterval(
+    function() {
+      this.clear();
+      if(frames == 400){
+        this.scene.newScene = true;        
+      }
+      if(frames == 800){
+        this.scene.newScene = true;  
+      }
+      if(frames == 1200){
+        this.scene.newScene = true;  
+      }
+      if (frames < 400) {
+        this.scene.draw(this.scene.texto, false);
+      } else if (frames >= 400 && frames < 800) {
+        this.scene.draw(this.scene.texto2,false);
+      } else if (frames >= 800 && frames < 1200) {
+        this.scene.draw(this.scene.texto3,false);
+      } else if (frames >= 1200 && frames < 1500) {
+        this.scene.draw(this.scene.texto4,false);
+      }else if (frames >= 1500){
+        this.scene.draw(this.scene.controls, true);
+      }
+      frames++;
+      if (frames >= 2400) {
+        clearInterval(this.idIntro);
+        this.start();
+      }
+      if (frames >= 10000) {
+        frames = 0;
+      }
+    }.bind(this), 17
+  );
+};
 Game.prototype.start = function() {
-  // this.soundtrack.play();
+  this.soundtrack.play();
   this.setHandlers();
   var frames = 0;
   this.idDraw = setInterval(
@@ -49,7 +87,7 @@ Game.prototype.start = function() {
       frames++;
       if (frames % 40 == 0) {
         this.sea.frameIndex *= -1;
-      } 
+      }
       if (frames % 1000 == 0) {
         this.sea.changeWind();
       }
@@ -137,7 +175,7 @@ Game.prototype.drawAll = function() {
   });
   this.boat.draw();
   this.boat2.draw();
- 
+
   this.sea.drawWind();
   //draws
 };
@@ -185,25 +223,28 @@ Game.prototype.checkImpacts = function(boat, cannonBall) {
     }
   });
 };
-Game.prototype.checkBoundaries = function(){
+Game.prototype.checkBoundaries = function() {
   this.boat.hitCircles.forEach(e => {
-    if(e.x + e.radius >= this.canvas.width || 
+    if (
+      e.x + e.radius >= this.canvas.width ||
       e.x - e.radius <= 0 ||
       e.y + e.radius >= this.canvas.height ||
-      e.y - e.radius <= 0){
+      e.y - e.radius <= 0
+    ) {
       this.boat.speed = 0.1;
     }
   });
   this.boat2.hitCircles.forEach(e => {
-    if(e.x + e.radius >= this.canvas.width || 
+    if (
+      e.x + e.radius >= this.canvas.width ||
       e.x - e.radius <= 0 ||
       e.y + e.radius >= this.canvas.height ||
-      e.y - e.radius <= 0){
+      e.y - e.radius <= 0
+    ) {
       this.boat2.speed = 0.1;
     }
   });
-
-}
+};
 Game.prototype.handleImpact = function(boat) {
   if (boat.health >= 10) {
     boat.health -= 10;
@@ -229,9 +270,11 @@ Game.prototype.printWinner = function(winner) {
         this.canvas.width / 4 - 120,
         this.canvas.height / 2 - 100
       );
-      this.ctx.strokeText("Player " + winner + " WINS",
-      this.canvas.width / 4 - 120,
-      this.canvas.height / 2 - 100);
+      this.ctx.strokeText(
+        "Player " + winner + " WINS",
+        this.canvas.width / 4 - 120,
+        this.canvas.height / 2 - 100
+      );
       this.ctx.closePath();
     }.bind(this),
     17
@@ -367,6 +410,4 @@ Game.prototype.boarding = function() {
   }, 17);
 };
 Game.prototype.drawBoarding = function() {};
-Game.prototype.menu = function() {
-
-}
+Game.prototype.menu = function() {};
