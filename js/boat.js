@@ -77,10 +77,10 @@ Boat.prototype.createCannons = function(number) {
   var k = 0;
   for (var i = 0; i < number; i++) {
     if (i < number / 2) {
-      this.cannons.push(new Cannon(this.game, this, j, "right"));
+      this.cannons.push(new Cannon(this.game, this, j+1, "right"));
       j++;
     } else {
-      this.cannons.push(new Cannon(this.game, this, k, "left"));
+      this.cannons.push(new Cannon(this.game, this, k+1, "left"));
       k++;
     }
   }
@@ -221,6 +221,16 @@ Boat.prototype.draw = function() {
   this.ctx.drawImage(this.img, -width / 2, -7.5 - height / 2, width, height);
   this.sailWidth = 1 + this.speed * 14;
   this.ctx.rotate(-Math.PI / 2);
+  
+  this.ctx.rotate(Math.PI / 2);
+  this.ctx.rotate(-angleInRadians - Math.PI / 2);
+  this.ctx.translate(-this.x, -this.y);
+  this.cannons.forEach(function(e) {
+    e.draw();
+  });
+  this.ctx.translate(this.x, this.y);
+  this.ctx.rotate(angleInRadians + Math.PI / 2);
+  this.ctx.rotate(-Math.PI / 2);
   this.ctx.beginPath();
   this.ctx.fillStyle = "white";
   this.ctx.fillRect(0, -30, this.sailWidth, 60);
@@ -228,9 +238,6 @@ Boat.prototype.draw = function() {
   this.ctx.rotate(Math.PI / 2);
   this.ctx.rotate(-angleInRadians - Math.PI / 2);
   this.ctx.translate(-this.x, -this.y);
-  this.cannons.forEach(function(e) {
-    e.draw();
-  });
   // DRAWING LOS CIRCLES DE LOS WEBS
   // this.hitCircles.forEach(e => {
   //   this.ctx.beginPath();
