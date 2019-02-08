@@ -1,10 +1,12 @@
-function hitCircle(game, x, y){
-  this.x = x;
-  this.y = y;
-  this.radius = 13.5;
+class hitCircle {
+  constructor(game, x, y) {
+    this.x = x;
+    this.y = y;
+    this.radius = 13.5;
+  }
+  move(x, y) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
-hitCircle.prototype.move = function (x, y){
-  this.x = x;
-  this.y = y;
-}
