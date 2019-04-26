@@ -1,18 +1,13 @@
-/*TODO:
-  "POWER UPS" -> BARRILES DE RON PARA RECARGAR MAS RAPIDO!!
-  SIRENAS QUE BAJAN LA VELOCIDAD Y VELOCIDAD DE RECARGA!!
-  AÑADIR ISLAS !!NO
-  AÑADIR TORMENTAS !!NO
-  MENU PARA ELEGIR BARCO (CON PERSONAJES) !!!
-  INTRODUCCION CON "HISTORIA"-?
-*/
 class Game {
   constructor(canvas, ctx) {
     this.canvas = canvas;
     this.ctx = ctx;
-    // this.player = new Player(this);
     this.boat = new Boat(this, 100, this.canvas.height / 2);
-    this.boat2 = new Boat(this, this.canvas.width - 100, this.canvas.height / 2);
+    this.boat2 = new Boat(
+      this,
+      this.canvas.width - 100,
+      this.canvas.height / 2
+    );
     this.boat2.angle = 180;
     this.sea = new Sea(this);
     this.soundtrack = new Audio("sounds/fight_bso.mp3");
@@ -20,82 +15,84 @@ class Game {
     this.keys = new Keys(this);
     this.scene = new Scene(this);
   }
-  // intro() {
-  //   var frames = 0;
-  //   this.idIntro = setInterval(function () {
-  //     this.clear();
-  //     if (frames == 400) {
-  //       this.scene.newScene = true;
-  //     }
-  //     if (frames == 800) {
-  //       this.scene.newScene = true;
-  //     }
-  //     if (frames == 1200) {
-  //       this.scene.newScene = true;
-  //     }
-  //     if (frames < 400) {
-  //       this.scene.draw(this.scene.texto, false);
-  //     }
-  //     else if (frames >= 400 && frames < 800) {
-  //       this.scene.draw(this.scene.texto2, false);
-  //     }
-  //     else if (frames >= 800 && frames < 1200) {
-  //       this.scene.draw(this.scene.texto3, false);
-  //     }
-  //     else if (frames >= 1200 && frames < 1500) {
-  //       this.scene.draw(this.scene.texto4, false);
-  //     }
-  //     else if (frames >= 1500) {
-  //       this.scene.draw(this.scene.controls, true);
-  //     }
-  //     frames++;
-  //     if (frames >= 2400) {
-  //       clearInterval(this.idIntro);
-  //       this.start();
-  //     }
-  //     if (frames >= 10000) {
-  //       frames = 0;
-  //     }
-  //   }.bind(this), 17);
-  // }
+  intro() {
+    var frames = 0;
+    this.idIntro = setInterval(
+      function() {
+        this.clear();
+        if (frames == 400) {
+          this.scene.newScene = true;
+        }
+        if (frames == 800) {
+          this.scene.newScene = true;
+        }
+        if (frames == 1200) {
+          this.scene.newScene = true;
+        }
+        if (frames < 400) {
+          this.scene.draw(this.scene.texto, false);
+        } else if (frames >= 400 && frames < 800) {
+          this.scene.draw(this.scene.texto2, false);
+        } else if (frames >= 800 && frames < 1200) {
+          this.scene.draw(this.scene.texto3, false);
+        } else if (frames >= 1200 && frames < 1500) {
+          this.scene.draw(this.scene.texto4, false);
+        } else if (frames >= 1500) {
+          this.scene.draw(this.scene.controls, true);
+        }
+        frames++;
+        if (frames >= 2400) {
+          clearInterval(this.idIntro);
+          this.start();
+        }
+        if (frames >= 10000) {
+          frames = 0;
+        }
+      }.bind(this),
+      17
+    );
+  }
   start() {
     this.soundtrack.play();
     this.setHandlers();
     var frames = 0;
-    this.idDraw = setInterval(function () {
-      this.checkBoundaries();
-      this.checkWinner();
-      this.handle();
-      this.moveAll();
-      this.drawAll();
-      this.accelerateBoat(this.boat);
-      this.accelerateBoat(this.boat2);
-      this.boat.loadCannons();
-      this.boat2.loadCannons();
-      this.windPush(this.boat);
-      this.windPush(this.boat2);
-      this.checkColisions();
-      this.boat.cannonBalls.forEach(element => {
-        this.checkImpacts(this.boat2, element);
-        element.lifetime -= 1;
-      });
-      this.boat2.cannonBalls.forEach(element => {
-        this.checkImpacts(this.boat, element);
-        element.lifetime -= 1;
-      });
-      this.boat.deleteCannonBall();
-      this.boat2.deleteCannonBall();
-      frames++;
-      if (frames % 40 == 0) {
-        this.sea.frameIndex *= -1;
-      }
-      if (frames % 1000 == 0) {
-        this.sea.changeWind();
-      }
-      if (frames >= 10000) {
-        frames = 0;
-      }
-    }.bind(this), 18);
+    this.idDraw = setInterval(
+      function() {
+        this.checkBoundaries();
+        this.checkWinner();
+        this.handle();
+        this.moveAll();
+        this.drawAll();
+        this.accelerateBoat(this.boat);
+        this.accelerateBoat(this.boat2);
+        this.boat.loadCannons();
+        this.boat2.loadCannons();
+        this.windPush(this.boat);
+        this.windPush(this.boat2);
+        this.checkColisions();
+        this.boat.cannonBalls.forEach(element => {
+          this.checkImpacts(this.boat2, element);
+          element.lifetime -= 1;
+        });
+        this.boat2.cannonBalls.forEach(element => {
+          this.checkImpacts(this.boat, element);
+          element.lifetime -= 1;
+        });
+        this.boat.deleteCannonBall();
+        this.boat2.deleteCannonBall();
+        frames++;
+        if (frames % 40 == 0) {
+          this.sea.frameIndex *= -1;
+        }
+        if (frames % 1000 == 0) {
+          this.sea.changeWind();
+        }
+        if (frames >= 10000) {
+          frames = 0;
+        }
+      }.bind(this),
+      18
+    );
     // this.checkImpacts();
   }
   accelerateBoat(boat) {
@@ -116,8 +113,10 @@ class Game {
     if (this.sea.wind === boat.getDirection()) {
       boat.maxSpeed = 2;
     }
-    if (this.sea.wind != boat.getDirection() &&
-      (boat.maxSpeed == 2 || boat.maxSpeed == 0.5)) {
+    if (
+      this.sea.wind != boat.getDirection() &&
+      (boat.maxSpeed == 2 || boat.maxSpeed == 0.5)
+    ) {
       boat.maxSpeed = 1;
     }
     if (this.sea.backWind == boat.getDirection()) {
@@ -178,18 +177,20 @@ class Game {
   moveAll() {
     this.boat.move();
     this.boat2.move();
-    this.boat.cannonBalls.forEach(function (e) {
+    this.boat.cannonBalls.forEach(function(e) {
       e.move();
     });
-    this.boat2.cannonBalls.forEach(function (e) {
+    this.boat2.cannonBalls.forEach(function(e) {
       e.move();
     });
   }
   checkColisions() {
     this.boat.hitCircles.forEach(e => {
       this.boat2.hitCircles.forEach(o => {
-        if (Math.abs(e.x - o.x) < e.radius + o.radius &&
-          Math.abs(e.y - o.y) < e.radius + o.radius) {
+        if (
+          Math.abs(e.x - o.x) < e.radius + o.radius &&
+          Math.abs(e.y - o.y) < e.radius + o.radius
+        ) {
           if (!this.recentlyCollided) {
             this.boat.health -= 20;
             this.boat2.health -= 20;
@@ -207,8 +208,10 @@ class Game {
   checkImpacts(boat, cannonBall) {
     //algoritmo maravilloso que trae vida y felicidad
     boat.hitCircles.forEach(e => {
-      if (Math.abs(e.x - cannonBall.x) < e.radius + cannonBall.radius &&
-        Math.abs(e.y - cannonBall.y) < e.radius + cannonBall.radius) {
+      if (
+        Math.abs(e.x - cannonBall.x) < e.radius + cannonBall.radius &&
+        Math.abs(e.y - cannonBall.y) < e.radius + cannonBall.radius
+      ) {
         cannonBall.impacted = true;
         cannonBall.lifetime = 0;
         this.handleImpact(boat);
@@ -217,18 +220,22 @@ class Game {
   }
   checkBoundaries() {
     this.boat.hitCircles.forEach(e => {
-      if (e.x + e.radius >= this.canvas.width ||
+      if (
+        e.x + e.radius >= this.canvas.width ||
         e.x - e.radius <= 0 ||
         e.y + e.radius >= this.canvas.height ||
-        e.y - e.radius <= 0) {
+        e.y - e.radius <= 0
+      ) {
         this.boat.speed = 0.1;
       }
     });
     this.boat2.hitCircles.forEach(e => {
-      if (e.x + e.radius >= this.canvas.width ||
+      if (
+        e.x + e.radius >= this.canvas.width ||
         e.x - e.radius <= 0 ||
         e.y + e.radius >= this.canvas.height ||
-        e.y - e.radius <= 0) {
+        e.y - e.radius <= 0
+      ) {
         this.boat2.speed = 0.1;
       }
     });
@@ -242,23 +249,33 @@ class Game {
     if (this.boat.health <= 0) {
       this.printWinner(2);
       clearInterval(this.idDraw);
-    }
-    else if (this.boat2.health <= 0) {
+    } else if (this.boat2.health <= 0) {
       this.printWinner(1);
       clearInterval(this.idDraw);
     }
   }
   printWinner(winner) {
-    setInterval(function () {
-      this.ctx.beginPath();
-      this.ctx.fillStyle = "red";
-      this.ctx.font = "80px Georgia";
-      this.ctx.fillText("Player " + winner + " WINS", this.canvas.width / 4 - 120, this.canvas.height / 2 - 100);
-      this.ctx.strokeText("Player " + winner + " WINS", this.canvas.width / 4 - 120, this.canvas.height / 2 - 100);
-      this.ctx.closePath();
-    }.bind(this), 17);
+    setInterval(
+      function() {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "red";
+        this.ctx.font = "80px Georgia";
+        this.ctx.fillText(
+          "Player " + winner + " WINS",
+          this.canvas.width / 4 - 120,
+          this.canvas.height / 2 - 100
+        );
+        this.ctx.strokeText(
+          "Player " + winner + " WINS",
+          this.canvas.width / 4 - 120,
+          this.canvas.height / 2 - 100
+        );
+        this.ctx.closePath();
+      }.bind(this),
+      17
+    );
   }
-  sinkBoat(boat) { }
+
   setHandlers() {
     var W_KEY = 87;
     var A_KEY = 65;
@@ -383,11 +400,10 @@ class Game {
   }
   boarding() {
     clearInterval(this.idDraw);
-    this.boardingId = setInterval(function () {
+    this.boardingId = setInterval(function() {
       this.drawBoarding;
     }, 17);
   }
-  drawBoarding() { }
-  menu() { }
+  drawBoarding() {}
+  menu() {}
 }
-
